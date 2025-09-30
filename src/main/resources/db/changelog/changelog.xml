@@ -112,4 +112,22 @@
                 referencedColumnNames="id"
                 onDelete="CASCADE"/>
     </changeSet>
+
+    <changeSet id="2" author="olesia">
+        <loadData
+                file="db/seeds/lectors_seed.csv"
+                separator=","
+                tableName="lectors"/>
+    </changeSet>
+
+    <changeSet id="3" author="olesia">
+        <loadData
+                file="db/seeds/departments_seed.csv"
+                separator=","
+                tableName="departments"/>
+        <loadData
+                file="db/seeds/department_lector_seed.csv"
+                separator=","
+                tableName="department_lector"/>
+    </changeSet>
 </databaseChangeLog>

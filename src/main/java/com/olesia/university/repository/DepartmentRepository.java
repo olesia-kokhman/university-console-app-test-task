@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Optional<Department> findByName(String departmentName);
 
-    @Query("SELECT avg(lector.salary) FROM Lector lector WHERE lector.department.name = :departmentName")
+    @Query("SELECT avg(lector.salary) FROM Lector lector JOIN lector.departments dep WHERE dep.name = :departmentName")
     Optional<Double> findAverageSalaryByDepartmentName(@Param("departmentName") String departmentName);
+
 }
