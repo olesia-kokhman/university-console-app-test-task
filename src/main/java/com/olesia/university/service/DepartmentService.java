@@ -5,12 +5,14 @@ import com.olesia.university.model.Lector;
 import com.olesia.university.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class DepartmentService {
 
     private final DepartmentRepository repository;
@@ -26,8 +28,11 @@ public class DepartmentService {
     public String getDepartmentHeadNameByDepartmentName(String departmentName) {
         return repository.findByName(departmentName).map(department -> {
             Lector head = department.getHead();
+            if(head == null) {
+                return "no head was set yet";
+            }
             return head.getName() + " " + head.getSurname();
-        }).orElse("no department head was set yet");
+        }).orElse("no department {" + departmentName + "}.");
     }
 
     public String getDegreeStatisticsByDepartmentName(String departmentName) {

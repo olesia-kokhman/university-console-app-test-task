@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -71,9 +72,9 @@ public class ConsoleUI {
                 return "No lectors were found for the given template {" + template + "}.";
             }
 
-            StringBuilder builder = new StringBuilder(",");
-            lectors.stream().map(lector -> lector.getName() + " " + lector.getSurname()).forEach(builder::append);
-            return builder.toString();
+            return lectors.stream()
+                    .map(lector -> lector.getName() + " " + lector.getSurname())
+                    .collect(Collectors.joining(", "));
         }
 
         return "Unknown command. Type 'help' to see available options.";
