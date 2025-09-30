@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
-    Department findByName(String departmentName);
+    Optional<Department> findByName(String departmentName);
 
     @Query("SELECT avg(lector.salary) FROM Lector lector WHERE lector.department.name = :departmentName")
-    Double findAverageSalaryByDepartmentName(@Param("departmentName") String departmentName);
+    Optional<Double> findAverageSalaryByDepartmentName(@Param("departmentName") String departmentName);
 }

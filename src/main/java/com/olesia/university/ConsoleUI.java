@@ -1,15 +1,13 @@
 package com.olesia.university;
 
-import com.olesia.university.model.Degree;
+import com.olesia.university.model.Lector;
 import com.olesia.university.service.DepartmentService;
 import com.olesia.university.service.LectorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -50,12 +48,9 @@ public class ConsoleUI {
                     + departmentService.getDepartmentHeadNameByDepartmentName(departmentName) + ".";
         }
 
-        if (input.toLowerCase().startsWith("show") && input.toLowerCase().endsWith("statistics.")) {
+        if (input.toLowerCase().startsWith("show") && input.toLowerCase().endsWith("statistics")) {
             String departmentName = input.substring(5, input.length() - 11).trim();
-            Map<Degree, Long> statisticsByDegree = departmentService.getDegreeStatisticsByDepartmentName(departmentName);
-            return "Assistants - " + statisticsByDegree.get(Degree.ASSISTANT) + ",\n" +
-                    "Associate professors - " + statisticsByDegree.get(Degree.ASSOCIATE_PROFESSOR) + ",\n" +
-                    "Professors - " + statisticsByDegree.get(Degree.PROFESSOR) + ".";
+            return departmentService.getDegreeStatisticsByDepartmentName(departmentName);
         }
 
         if (input.toLowerCase().startsWith("show the average salary for the department")) {
@@ -71,10 +66,13 @@ public class ConsoleUI {
 
         if (input.toLowerCase().startsWith("global search by")) {
             String template = input.substring("global search by".length()).trim();
-            List<String> lectors = lectorService.getLectorsByTemplate(template).stream().map(lector -> lector.getName() + " " + lector.getSurname())
-                    .collect(Collectors.toList());
+            List<Lector> lectors = lectorService.getLectorsByTemplate(template);
+            if(lectors.isEmpty()) {
+                return "No lectors were found for the given template {" + template + "}.";
+            }
+
             StringBuilder builder = new StringBuilder(",");
-            lectors.forEach(builder::append);
+            lectors.stream().map(lector -> lector.getName() + " " + lector.getSurname()).forEach(builder::append);
             return builder.toString();
         }
 
@@ -84,7 +82,7 @@ public class ConsoleUI {
     public String getHelpMessage() {
         return "Available commands:\n" +
                 "                 - Who is head of department {department_name}\n" +
-                "                 - Show {department_name} statistics.\n" +
+                "                 - Show {department_name} statistics\n" +
                 "                 - Show the average salary for the department {department_name}\n" +
                 "                 - Show count of employee for {department_name}\n" +
                 "                 - Global search by {template}\n" +
